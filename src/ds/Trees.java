@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 public class Trees {
 
@@ -20,6 +21,11 @@ public class Trees {
 
     Trees obj = new Trees();
     TreeNode root = obj.prepareTree();
+    
+    obj.inOrder(root);
+    obj.preOrder(root);
+    
+    System.out.println("\n5th Largest: "+obj.findNthLargest(root, 5));
     
     List<List<Integer>> ll = obj.levelOrder(root);
 
@@ -76,7 +82,7 @@ public class Trees {
       List<TreeNode> queue;
       LinkedList<List<Integer>> ll = new LinkedList<List<Integer>>();
       queue = new ArrayList<TreeNode>();
-      System.out.println("Level Order: ");
+      System.out.println("\nLevel Order: ");
       if(root != null){
           queue.add(root);
       }
@@ -101,5 +107,71 @@ public class Trees {
       }
       return ll;
   }
+  
+  public void preOrder(TreeNode root){
+    if(root==null)
+      return;
+    System.out.println("\nPre Order:  ");
+    Stack<TreeNode> st = new Stack<Trees.TreeNode>();
+    st.push(root);
+    TreeNode temp;
+    while(!st.empty()){
+      temp = st.pop();
+      while(temp!=null){
+        System.out.format("%4d", temp.val);
+        if(temp.right!=null)
+          st.push(temp.right);
+        temp = temp.left;
+      }
+    }
+  }
+  
+  public void inOrder(TreeNode root){
+    if(root==null)
+      return;
+    System.out.println("\nIn Order: ");
+    Stack<TreeNode> s = new Stack<Trees.TreeNode>();
+    TreeNode t = root;
+    boolean done = false;
+    while(!done){
+      while(t!=null){
+        s.push(t);
+        t = t.left;
+      }
+      if(!s.empty()){
+        t = s.pop();
+        System.out.format("%4d", t.val);
+        t = t.right;
+      }else
+        done = true;
+    }
+  }
 
+  /*
+   * To find the nth largest in a BST, idea is to traverse tree in reverse in order and stop after n elements;
+   */
+  public int findNthLargest(TreeNode root, int n){
+    if(root==null)
+      return -1;
+    
+    Stack<TreeNode> s = new Stack<Trees.TreeNode>();
+    TreeNode t = root;
+    boolean done = false;
+    while(!done){
+      while(t!=null){
+        s.push(t);
+        t= t.right;
+      }
+      if(!s.empty()){
+        n--;
+        t = s.pop();
+        if(n==0) return t.val;
+        t = t.left;
+      }else{
+        done = true;
+      }
+    }
+    
+    return -1;
+  }
 }
